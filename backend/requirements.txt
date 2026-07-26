@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+websockets
+pytest
+pytest-asyncio
+sqlalchemy
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt<4.1
