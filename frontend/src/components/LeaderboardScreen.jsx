@@ -7,17 +7,37 @@ const API = "http://localhost:8000";
 export default function LeaderboardScreen() {
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  const [season, setSeason] = useState("current");
+  const [seasonName, setSeasonName] = useState("Current Season");
+  const { user, token } = useAuth();
 
   useEffect(() => {
-    fetch(`${API}/auth/leaderboard?limit=50`)
-      .then((r) => r.json())
-      .then((data) => {
+    setLoading(true);
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+    const requests = [
+      fetch(`${API}/auth/leaderboard?season=${season}&limit=50`, { headers }).then(
+        (r) => r.json()
+      ),
+    ];
+    if (season === "current") {
+      requests.push(
+        fetch(`${API}/seasons/current`, { headers }).then((r) => r.json())
+      );
+    }
+
+    Promise.all(requests)
+      .then(([data, seasonData]) => {
         setPlayers(data);
+        if (seasonData?.name) {
+          setSeasonName(seasonData.name);
+        } else {
+          setSeasonName("All Time");
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [season, token]);
 
   if (loading) return <div className="loading">Loading leaderboard...</div>;
 
@@ -25,7 +45,23 @@ export default function LeaderboardScreen() {
     <div className="leaderboard-screen">
       <div className="leaderboard-card">
         <h2 className="leaderboard-title">Leaderboard</h2>
-        <p className="leaderboard-subtitle">Top fighters by ELO rating</p>
+        <p className="leaderboard-subtitle">{seasonName}</p>
+
+        <div className="leaderboard-toggle">
+          <button
+            className={`leaderboard-toggle-btn ${season === "current" ? "active" : ""}`}
+            onClick={() => setSeason("current")}
+          >
+            Current Season
+          </button>
+          <button
+            className={`leaderboard-toggle-btn ${season === "alltime" ? "active" : ""}`}
+            onClick={() => setSeason("alltime")}
+          >
+            All Time
+          </button>
+        </div>
+
         <div className="leaderboard-list">
           {players.map((p, i) => (
             <Link

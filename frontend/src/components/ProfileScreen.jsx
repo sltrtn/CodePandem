@@ -1,13 +1,24 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useChallenge } from "../context/ChallengeContext";
 
 const API = "http://localhost:8000";
 
 export default function ProfileScreen() {
   const { userId } = useParams();
+  const { user, token, logoutAll, changePassword, deleteAccount } = useAuth();
+  const { sendChallenge } = useChallenge();
   const [profile, setProfile] = useState(null);
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [accountMessage, setAccountMessage] = useState(null);
+
+  const isMe = user?.id === userId;
 
   // Easter egg — tap name 7 times
   const [easterEggTaps, setEasterEggTaps] = useState(0);
@@ -20,9 +31,10 @@ export default function ProfileScreen() {
 
   useEffect(() => {
     setLoading(true);
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
     Promise.all([
-      fetch(`${API}/auth/users/${userId}`).then((r) => r.json()),
-      fetch(`${API}/auth/users/${userId}/matches?limit=20`).then((r) => r.json()),
+      fetch(`${API}/auth/users/${userId}`, { headers }).then((r) => r.json()),
+      fetch(`${API}/auth/users/${userId}/matches?limit=20`, { headers }).then((r) => r.json()),
     ])
       .then(([profileData, matchData]) => {
         setProfile(profileData);
@@ -30,7 +42,7 @@ export default function ProfileScreen() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [userId]);
+  }, [userId, token]);
 
   if (loading) return <div className="loading">Loading profile...</div>;
   if (!profile?.id) return <div className="loading">User not found</div>;
@@ -63,6 +75,14 @@ export default function ProfileScreen() {
               <span className="easter-egg-hint">{7 - easterEggTaps} more...</span>
             )}
           </div>
+          {!isMe && (
+            <button
+              className="profile-challenge-btn"
+              onClick={() => sendChallenge(userId)}
+            >
+              Challenge
+            </button>
+          )}
         </div>
 
         {showSlater && (
@@ -104,6 +124,140 @@ export default function ProfileScreen() {
             <span className="profile-stat-label">Win Rate</span>
           </div>
         </div>
+
+        {profile.season && (
+          <div className="profile-section">
+            <h3 className="profile-section-title">Current Season</h3>
+            <div className="profile-stats-grid">
+              <div className="profile-stat">
+                <span className="profile-stat-value">{profile.season.season_elo}</span>
+                <span className="profile-stat-label">Season ELO</span>
+              </div>
+              <div className="profile-stat">
+                <span className="profile-stat-value">{profile.season.highest_season_elo}</span>
+                <span className="profile-stat-label">Season High</span>
+              </div>
+              <div className="profile-stat">
+                <span className="profile-stat-value win-color">{profile.season.wins}</span>
+                <span className="profile-stat-label">Wins</span>
+              </div>
+              <div className="profile-stat">
+                <span className="profile-stat-value loss-color">{profile.season.losses}</span>
+                <span className="profile-stat-label">Losses</span>
+              </div>
+              <div className="profile-stat">
+                <span className="profile-stat-value">{profile.season.draws}</span>
+                <span className="profile-stat-label">Draws</span>
+              </div>
+              <div className="profile-stat">
+                <span className="profile-stat-value">{profile.season.games_played}</span>
+                <span className="profile-stat-label">Games</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {isMe && (
+          <div className="profile-section">
+            <h3 className="profile-section-title">Account</h3>
+            <button
+              className="profile-account-toggle"
+              onClick={() => setShowAccountMenu(!showAccountMenu)}
+            >
+              {showAccountMenu ? "Close" : "Manage Account"}
+            </button>
+
+            {showAccountMenu && (
+              <div className="profile-account-menu">
+                <div className="profile-account-block">
+                  <h4>Change Password</h4>
+                  <input
+                    type="password"
+                    placeholder="Current password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className="auth-input"
+                  />
+                  <input
+                    type="password"
+                    placeholder="New password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="auth-input"
+                  />
+                  <input
+                    type="password"
+                    placeholder="Confirm new password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="auth-input"
+                  />
+                  <button
+                    className="profile-account-btn"
+                    onClick={async () => {
+                      setAccountMessage(null);
+                      if (newPassword !== confirmPassword) {
+                        setAccountMessage("Passwords don't match");
+                        return;
+                      }
+                      try {
+                        await changePassword(currentPassword, newPassword);
+                        setAccountMessage("Password changed. You were logged out elsewhere.");
+                        setCurrentPassword("");
+                        setNewPassword("");
+                        setConfirmPassword("");
+                      } catch (e) {
+                        setAccountMessage(e.message);
+                      }
+                    }}
+                  >
+                    Change Password
+                  </button>
+                </div>
+
+                <div className="profile-account-block">
+                  <h4>Sessions</h4>
+                  <button
+                    className="profile-account-btn warning"
+                    onClick={async () => {
+                      setAccountMessage(null);
+                      try {
+                        await logoutAll();
+                        setAccountMessage("All other sessions logged out.");
+                      } catch (e) {
+                        setAccountMessage(e.message);
+                      }
+                    }}
+                  >
+                    Log Out All Devices
+                  </button>
+                </div>
+
+                <div className="profile-account-block danger">
+                  <h4>Delete Account</h4>
+                  <button
+                    className="profile-account-btn danger"
+                    onClick={async () => {
+                      if (!window.confirm("Delete your account permanently? This cannot be undone.")) return;
+                      setAccountMessage(null);
+                      try {
+                        await deleteAccount();
+                      } catch (e) {
+                        setAccountMessage(e.message);
+                      }
+                    }}
+                  >
+                    Delete Account
+                  </button>
+                </div>
+
+                {accountMessage && (
+                  <p className="profile-account-message">{accountMessage}</p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="profile-section">
           <h3 className="profile-section-title">Match History</h3>

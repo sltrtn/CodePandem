@@ -11,6 +11,15 @@ export default function Navbar() {
         <NavLink to="/" end className={({ isActive }) => `navbar-link ${isActive ? "active" : ""}`}>
           Battle
         </NavLink>
+        <NavLink to="/lobby" className={({ isActive }) => `navbar-link ${isActive ? "active" : ""}`}>
+          Lobby
+        </NavLink>
+        <NavLink to="/friends" className={({ isActive }) => `navbar-link ${isActive ? "active" : ""}`}>
+          Friends
+        </NavLink>
+        <NavLink to="/custom-game" className={({ isActive }) => `navbar-link ${isActive ? "active" : ""}`}>
+          Custom
+        </NavLink>
         <NavLink to="/leaderboard" className={({ isActive }) => `navbar-link ${isActive ? "active" : ""}`}>
           Leaderboard
         </NavLink>

@@ -5,9 +5,10 @@ import ProblemPanel from "./ProblemPanel";
 import RoundIndicator from "./RoundIndicator";
 import ResultsScreen from "./ResultsScreen";
 import CountdownTimer from "./CountdownTimer";
+import ChatPanel from "./ChatPanel";
 
 export default function DuelScreen() {
-  const { matchOver, roundData, roundOver, status } = useDuel();
+  const { matchOver, roundData, roundOver } = useDuel();
 
   if (matchOver) return <ResultsScreen />;
   if (!roundData) return <div className="loading">Loading match...</div>;
@@ -35,6 +36,7 @@ export default function DuelScreen() {
         </div>
         <div className="duel-right">
           <Scoreboard />
+          <ChatPanel />
         </div>
       </div>
     </div>

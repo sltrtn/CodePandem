@@ -1,11 +1,19 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { ToastProvider } from "./components/Toast";
+import { ChallengeProvider } from "./context/ChallengeContext";
 import LoginScreen from "./components/LoginScreen";
 import RegisterScreen from "./components/RegisterScreen";
+import ResetPasswordScreen from "./components/ResetPasswordScreen";
 import QueueScreen from "./components/QueueScreen";
 import DuelScreen from "./components/DuelScreen";
+import ResultsScreen from "./components/ResultsScreen";
 import LeaderboardScreen from "./components/LeaderboardScreen";
 import ProfileScreen from "./components/ProfileScreen";
+import LobbyScreen from "./components/LobbyScreen";
+import SpectatorView from "./components/SpectatorView";
+import FriendsScreen from "./components/FriendsScreen";
+import CustomLobbyScreen from "./components/CustomLobbyScreen";
 import Navbar from "./components/Navbar";
 import { DuelProvider } from "./context/DuelContext";
 import "./styles/app.css";
@@ -24,7 +32,7 @@ function PublicRoute({ children }) {
 
 function Layout({ children }) {
   return (
-    <div className="app-layout">
+    <div className="app-layout page-enter">
       <Navbar />
       <main className="app-main">{children}</main>
     </div>
@@ -35,15 +43,17 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          <Route
-            path="/login"
-            element={
-              <PublicRoute>
-                <LoginScreen />
-              </PublicRoute>
-            }
-          />
+        <ToastProvider>
+          <ChallengeProvider>
+            <Routes>
+            <Route
+              path="/login"
+              element={
+                <PublicRoute>
+                  <LoginScreen />
+                </PublicRoute>
+              }
+            />
           <Route
             path="/register"
             element={
@@ -53,46 +63,106 @@ export default function App() {
             }
           />
           <Route
-            path="/"
+            path="/reset-password"
+            element={
+              <PublicRoute>
+                <ResetPasswordScreen />
+              </PublicRoute>
+            }
+          />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <QueueScreen />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/leaderboard"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <LeaderboardScreen />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/:userId"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ProfileScreen />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/duel/:matchId"
+              element={
+                <ProtectedRoute>
+                  <DuelProvider>
+                    <DuelScreen />
+                  </DuelProvider>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/results/:matchId"
+              element={
+                <ProtectedRoute>
+                  <DuelProvider>
+                    <ResultsScreen />
+                  </DuelProvider>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/lobby"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <LobbyScreen />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+          <Route
+            path="/spectate/:matchId"
             element={
               <ProtectedRoute>
                 <Layout>
-                  <QueueScreen />
+                  <SpectatorView />
                 </Layout>
               </ProtectedRoute>
             }
           />
           <Route
-            path="/leaderboard"
+            path="/friends"
             element={
               <ProtectedRoute>
                 <Layout>
-                  <LeaderboardScreen />
+                  <FriendsScreen />
                 </Layout>
               </ProtectedRoute>
             }
           />
           <Route
-            path="/profile/:userId"
+            path="/custom-game"
             element={
               <ProtectedRoute>
                 <Layout>
-                  <ProfileScreen />
+                  <CustomLobbyScreen />
                 </Layout>
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/duel/:matchId"
-            element={
-              <ProtectedRoute>
-                <DuelProvider>
-                  <DuelScreen />
-                </DuelProvider>
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
+          </Routes>
+          </ChallengeProvider>
+        </ToastProvider>
       </AuthProvider>
     </BrowserRouter>
   );

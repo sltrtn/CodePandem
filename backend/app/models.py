@@ -6,6 +6,13 @@ from fastapi import WebSocket
 
 
 @dataclass
+class KeystrokeEvent:
+    key: str = ""
+    timestamp_ms: int = 0
+    duration_ms: int = 0
+
+
+@dataclass
 class Telemetry:
     paste_events: list[dict] = field(default_factory=list)
     tab_switches: list[dict] = field(default_factory=list)
@@ -16,6 +23,11 @@ class Telemetry:
     total_paste_length: int = 0
     tab_switch_count: int = 0
     total_tab_time_ms: int = 0
+    keystroke_events: list[dict] = field(default_factory=list)
+    avg_key_interval_ms: float = 0.0
+    key_interval_stddev: float = 0.0
+    burst_paste_count: int = 0
+    max_burst_length: int = 0
 
 
 @dataclass
@@ -84,6 +96,8 @@ class Match:
     current_round: int = 0
     status: str = "waiting"
     winner: str | None = None
+    mode: str = "ranked"
+    season_id: str | None = None
 
     def add_player(self, ws: WebSocket) -> str:
         pid = uuid.uuid4().hex[:8]

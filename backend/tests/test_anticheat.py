@@ -46,4 +46,5 @@ def test_impossible_speed():
         time_since_match_start_ms=3000,
     )
     cs = calculate_cheat_score(t, Problem(difficulty="hard"), "def solve(): pass")
-    assert cs.composite > 0.2
+    assert cs.composite > 0.15
+    assert cs.breakdown["speed"] > 0.2

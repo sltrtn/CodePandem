@@ -16,12 +16,17 @@ export function DuelProvider({ children }) {
   const [roundOver, setRoundOver] = useState(null);
   const [matchOver, setMatchOver] = useState(null);
   const [timerS, setTimerS] = useState(0);
+  const [chatMessages, setChatMessages] = useState([]);
 
   const wsUrl = matchId && token
     ? `ws://localhost:8000/ws/duel/${matchId}?token=${token}`
     : null;
 
   const { send, subscribe, status } = useWebSocket(wsUrl);
+
+  useEffect(() => {
+    setChatMessages([]);
+  }, [matchId]);
 
   useEffect(() => {
     if (!subscribe) return;
@@ -55,6 +60,9 @@ export function DuelProvider({ children }) {
         case "match_over":
           setMatchOver(msg);
           setPlayers(msg.players || {});
+          break;
+        case "chat":
+          setChatMessages((prev) => [...prev, msg]);
           break;
       }
     });
@@ -91,6 +99,7 @@ export function DuelProvider({ children }) {
         submitCode,
         send,
         status,
+        chatMessages,
       }}
     >
       {children}

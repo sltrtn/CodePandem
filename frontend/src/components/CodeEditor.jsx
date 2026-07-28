@@ -1,28 +1,27 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useDuel } from "../context/DuelContext";
 import useTelemetry from "../hooks/useTelemetry";
 
 export default function CodeEditor() {
-  const { submitCode, lastSubmission, roundData } = useDuel();
-  const { ref: telemetryRef, exportTelemetry } = useTelemetry();
+  const { submitCode, lastSubmission } = useDuel();
+  const { ref: telemetryRef, exportTelemetry, recordPaste, recordKeystroke } = useTelemetry();
   const [code, setCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const handlePaste = useCallback(
     (e) => {
       const text = e.clipboardData.getData("text");
-      telemetryRef.current.pasteEvents.push({
-        timestamp: Date.now(),
-        length: text.length,
-        lineCount: text.split("\n").length,
-      });
+      recordPaste(text.length);
     },
-    [telemetryRef]
+    [recordPaste]
   );
 
-  const handleKeyDown = useCallback(() => {
-    telemetryRef.current.keystrokeCount++;
-  }, [telemetryRef]);
+  const handleKeyDown = useCallback(
+    (e) => {
+      recordKeystroke(e.key);
+    },
+    [recordKeystroke]
+  );
 
   const handleSubmit = useCallback(() => {
     if (!code.trim() || submitting) return;
@@ -37,7 +36,15 @@ export default function CodeEditor() {
       <div className="editor-header">
         <span className="editor-label">Your Solution</span>
         {result && (
-          <span className={`editor-result ${result.error ? "error" : result.test_cases_passed === result.test_cases_total ? "pass" : "partial"}`}>
+          <span
+            className={`editor-result ${
+              result.error
+                ? "error"
+                : result.test_cases_passed === result.test_cases_total
+                ? "pass"
+                : "partial"
+            }`}
+          >
             {result.error
               ? result.error
               : `${result.test_cases_passed}/${result.test_cases_total} passed · ${result.time_ms}ms · ${(result.memory_kb / 1024).toFixed(1)}MB`}

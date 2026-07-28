@@ -16,7 +16,7 @@
 | Title | SemiBold (600) | Card titles, modal headers |
 | Body | Normal (400) | Paragraphs, descriptions, labels |
 | Label | Medium (500) | Buttons, chips, badges |
-| Mono | (project-specific) | Code editors, timestamps only |
+| Mono | JetBrains Mono | Code editors, timestamps only |
 
 ### Type Scale
 
@@ -82,11 +82,11 @@ Each project defines its own accent but shares all neutral tokens.
 
 ### Project Accent Colors
 
-| Project | Accent | Hex | On-Accent |
-|---|---|---|---|
-| Meluko | Sunrise Amber | `#FF8C00` | `#FFFFFF` |
-| ContextIQ | Scholarly Navy | `#002855` | `#FFFFFF` |
-| CodePandem | Battle Indigo | `#6c63ff` | `#FFFFFF` |
+| Project | Accent | Hex | On-Accent | Mono |
+|---|---|---|---|---|
+| Meluko | Sunrise Amber | `#FF8C00` | `#FFFFFF` | (none specified) |
+| ContextIQ | Scholarly Navy | `#002855` | `#FFFFFF` | (none specified) |
+| CodePandem | Battle Indigo | `#6c63ff` | `#FFFFFF` | JetBrains Mono |
 
 ---
 
