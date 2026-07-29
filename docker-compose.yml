@@ -1,0 +1,25 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - codepandem_db:/app/data
+    environment:
+      - DATABASE_URL=sqlite:///./data/codepandem.db
+      - CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,http://localhost,http://localhost:${FRONTEND_PORT:-80}
+      - CODEPANDEM_JWT_SECRET=${CODEPANDEM_JWT_SECRET:-codepandem-dev-secret-change-in-prod}
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  codepandem_db:

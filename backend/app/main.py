@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -6,11 +8,16 @@ from app.routers import auth, health, seasons, social, submissions
 from app.seasons import get_current_season
 from app.ws import challenge, duel, lobby_ws, queue
 
-app = FastAPI(title="CodePandem", version="0.5.0")
+app = FastAPI(title="CodePandem", version="0.6.0")
+
+origins = os.getenv(
+    "CORS_ORIGINS",
+    "http://localhost:5173,http://127.0.0.1:5173,http://localhost",
+).split(",")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

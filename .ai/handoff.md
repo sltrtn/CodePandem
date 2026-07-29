@@ -46,10 +46,22 @@
 ## Known Non-Blocking Issues
 - (none)
 
+## What's Done Now (Dockerization)
+- **`backend/Dockerfile`** — Python 3.14-slim, `pip install`, exposes 8000
+- **`frontend/Dockerfile`** — multi-stage: Node 26 build → nginx:alpine serve
+- **`frontend/nginx.conf`** — SPA routing (`try_files` fallback)
+- **`docker-compose.yml`** — backend + frontend services, named volume for SQLite, env vars for CORS/JWT/DB
+- **Configurable DB** — `DATABASE_URL` env var, defaults to `sqlite:///./codepandem.db`
+- **Configurable CORS** — `CORS_ORIGINS` env var with sensible defaults
+- **Cleanup** — removed unused `passlib[bcrypt]` and `bcrypt<4.1` pin from requirements
+
+Usage: `docker compose up` (add `-d` for detached). Runs on ports 8000 (API) and 80 (frontend).
+
 ## What's Next
 - **Phase 9 (remaining): Production Hardening** — PostgreSQL, Redis, replay system, admin dashboard, horizontal scaling, DDoS protection
 
 ## Key Files
 - Backend: `/home/mad/codepandem/backend/`
 - Frontend: `/home/mad/codepandem/frontend/`
+- Docker: `/home/mad/codepandem/docker-compose.yml`
 - Git: https://github.com/sltrtn/CodePandem
