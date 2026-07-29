@@ -41,6 +41,13 @@
 - Change password, account deletion, logout all devices
 - 35/35 tests passing
 
+### UX Refresh — ✅ Done
+- Onboarding landing page
+- First-login tutorial
+- Auto-connect queue with Battle button
+- Glass-morphism navbar
+- Removed ranked/unranked toggle from queue
+
 ### Infrastructure — Pending
 - Move from SQLite to PostgreSQL
 - Redis for presence, sessions, and pub/sub

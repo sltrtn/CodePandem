@@ -9,7 +9,7 @@ export default function FriendsScreen() {
   const [tab, setTab] = useState("friends");
   const [addUsername, setAddUsername] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const api = "http://localhost:8000";
+  const api = "/api";
 
   const loadFriends = useCallback(async () => {
     const res = await fetch(`${api}/social/friends`, {

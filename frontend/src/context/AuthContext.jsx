@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, useCallback, useRef } f
 
 const AuthContext = createContext(null);
 
-const API = "http://localhost:8000";
+const API = "/api";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
@@ -38,6 +38,14 @@ export function AuthProvider({ children }) {
     localStorage.setItem("token", accessToken);
     localStorage.setItem("refreshToken", refreshTokenValue);
     localStorage.setItem("user", JSON.stringify(userData));
+  }, []);
+
+  const updateUser = useCallback((updates) => {
+    setUser((prev) => {
+      const next = { ...prev, ...updates };
+      localStorage.setItem("user", JSON.stringify(next));
+      return next;
+    });
   }, []);
 
   const refresh = useCallback(async () => {
@@ -248,6 +256,7 @@ export function AuthProvider({ children }) {
         confirmPasswordReset,
         deleteAccount,
         apiRequest,
+        updateUser,
       }}
     >
       {children}

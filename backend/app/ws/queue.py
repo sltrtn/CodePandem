@@ -55,11 +55,11 @@ async def ws_queue(ws: WebSocket) -> None:
         db.close()
 
     await ws.send_json({
-        "type": "queued",
-        "position": matchmaker.queue_size,
+        "type": "connected",
         "player_id": player_id,
         "username": username,
         "elo": round(elo, 1),
+        "players_in_queue": matchmaker.queue_size,
     })
 
     mode: str = "ranked"
@@ -80,6 +80,14 @@ async def ws_queue(ws: WebSocket) -> None:
                 mode = data.get("mode", "ranked") or "ranked"
                 if mode not in ("ranked", "unranked"):
                     mode = "ranked"
+
+                await ws.send_json({
+                    "type": "queued",
+                    "position": matchmaker.queue_size,
+                    "player_id": player_id,
+                    "username": username,
+                    "elo": round(elo, 1),
+                })
 
                 status_task = asyncio.create_task(_status_loop())
 

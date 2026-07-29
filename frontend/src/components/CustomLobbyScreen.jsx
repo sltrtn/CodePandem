@@ -10,7 +10,7 @@ export default function CustomLobbyScreen() {
   const [joining, setJoining] = useState(false);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState(null);
-  const api = "http://localhost:8000";
+  const api = "/api";
 
   const handleCreate = async () => {
     setCreating(true);

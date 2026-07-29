@@ -273,6 +273,16 @@ def delete_account(
     return {"status": "account_deleted"}
 
 
+@router.patch("/me/tutorial")
+def complete_tutorial(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user.tutorial_completed = True
+    db.commit()
+    return {"status": "tutorial_completed"}
+
+
 @router.get("/me")
 def get_me(user: User = Depends(get_current_user)):
     return user.to_dict()

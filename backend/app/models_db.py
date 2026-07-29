@@ -29,6 +29,7 @@ class User(Base):
     losses = Column(Integer, default=0, nullable=False)
     draws = Column(Integer, default=0, nullable=False)
     tier = Column(String(20), default="bronze", nullable=False)
+    tutorial_completed = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime, default=_utcnow, nullable=False)
     last_login = Column(DateTime, default=_utcnow, nullable=False)
 
@@ -63,6 +64,7 @@ class User(Base):
             "draws": self.draws,
             "games_played": self.wins + self.losses + self.draws,
             "tier": self.tier,
+            "tutorial_completed": self.tutorial_completed,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "last_login": self.last_login.isoformat() if self.last_login else None,
         }

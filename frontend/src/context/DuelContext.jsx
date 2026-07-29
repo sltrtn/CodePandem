@@ -19,7 +19,7 @@ export function DuelProvider({ children }) {
   const [chatMessages, setChatMessages] = useState([]);
 
   const wsUrl = matchId && token
-    ? `ws://localhost:8000/ws/duel/${matchId}?token=${token}`
+    ? `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}/ws/duel/${matchId}?token=${token}`
     : null;
 
   const { send, subscribe, status } = useWebSocket(wsUrl);

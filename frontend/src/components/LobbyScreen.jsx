@@ -15,7 +15,7 @@ export default function LobbyScreen() {
   useEffect(() => {
     if (!token) return;
 
-    const ws = new WebSocket(`ws://localhost:8000/ws/lobby?token=${token}`);
+    const ws = new WebSocket(`${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}/ws/lobby?token=${token}`);
     wsRef.current = ws;
 
     ws.onopen = () => {

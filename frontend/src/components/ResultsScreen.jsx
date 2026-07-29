@@ -81,7 +81,7 @@ export default function ResultsScreen() {
     if (!token || !matchOver?.match_id) return;
 
     const ws = new WebSocket(
-      `ws://localhost:8000/ws/rematch/${matchOver.match_id}?token=${token}`
+      `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}/ws/rematch/${matchOver.match_id}?token=${token}`
     );
     wsRef.current = ws;
 

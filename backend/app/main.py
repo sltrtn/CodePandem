@@ -8,7 +8,7 @@ from app.routers import auth, health, seasons, social, submissions
 from app.seasons import get_current_season
 from app.ws import challenge, duel, lobby_ws, queue
 
-app = FastAPI(title="CodePandem", version="0.6.0")
+app = FastAPI(title="CodePandem", version="0.7.0")
 
 origins = os.getenv(
     "CORS_ORIGINS",

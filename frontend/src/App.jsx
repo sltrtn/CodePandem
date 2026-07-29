@@ -5,6 +5,8 @@ import { ChallengeProvider } from "./context/ChallengeContext";
 import LoginScreen from "./components/LoginScreen";
 import RegisterScreen from "./components/RegisterScreen";
 import ResetPasswordScreen from "./components/ResetPasswordScreen";
+import OnboardingScreen from "./components/OnboardingScreen";
+import TutorialOverlay from "./components/TutorialOverlay";
 import QueueScreen from "./components/QueueScreen";
 import DuelScreen from "./components/DuelScreen";
 import ResultsScreen from "./components/ResultsScreen";
@@ -39,6 +41,17 @@ function Layout({ children }) {
   );
 }
 
+function HomeRoute() {
+  const { token, user } = useAuth();
+  if (!token) return <OnboardingScreen />;
+  if (user && !user.tutorial_completed) return <TutorialOverlay />;
+  return (
+    <Layout>
+      <QueueScreen />
+    </Layout>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -70,16 +83,7 @@ export default function App() {
               </PublicRoute>
             }
           />
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <Layout>
-                    <QueueScreen />
-                  </Layout>
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/" element={<HomeRoute />} />
             <Route
               path="/leaderboard"
               element={

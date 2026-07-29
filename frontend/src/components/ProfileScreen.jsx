@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useChallenge } from "../context/ChallengeContext";
 
-const API = "http://localhost:8000";
+const API = "/api";
 
 export default function ProfileScreen() {
   const { userId } = useParams();

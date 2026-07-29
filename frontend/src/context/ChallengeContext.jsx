@@ -22,7 +22,7 @@ export function ChallengeProvider({ children }) {
   useEffect(() => {
     if (!token) return;
 
-    const ws = new WebSocket(`ws://localhost:8000/ws/challenge?token=${token}`);
+    const ws = new WebSocket(`${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}/ws/challenge?token=${token}`);
     wsRef.current = ws;
 
     ws.onopen = () => {

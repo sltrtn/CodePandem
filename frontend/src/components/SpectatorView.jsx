@@ -36,7 +36,7 @@ export default function SpectatorView() {
     if (!token || !matchId) return;
 
     const ws = new WebSocket(
-      `ws://localhost:8000/ws/spectate/${matchId}?token=${token}`
+      `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}/ws/spectate/${matchId}?token=${token}`
     );
     wsRef.current = ws;
 
