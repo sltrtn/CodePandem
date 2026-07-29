@@ -101,7 +101,7 @@ a {
   font-weight: 900;
   letter-spacing: 0.05em;
   margin-bottom: 32px;
-  color: var(--accent);
+  color: var(--text);
 }
 
 .queue-status {
@@ -373,7 +373,7 @@ a {
 }
 
 .scoreboard-row.me {
-  border-color: var(--accent);
+  border-color: var(--border);
   background: var(--surface-raised);
 }
 
@@ -1003,7 +1003,7 @@ a {
   background: rgba(15, 15, 30, 0.65);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(20, 184, 166, 0.12);
+  border-bottom: 1px solid var(--border);
 }
 
 .navbar-left,
@@ -1075,7 +1075,6 @@ a {
 
 .navbar-link.active {
   color: var(--accent);
-  background: rgba(20, 184, 166, 0.1);
 }
 
 .navbar-link.active::after {
@@ -1177,7 +1176,7 @@ a {
 }
 
 .leaderboard-row.me {
-  border: 1px solid var(--accent);
+  border: 1px solid var(--border);
   background: var(--surface-raised);
 }
 
@@ -1543,8 +1542,8 @@ a {
 }
 
 .lobby-player-row.me {
-  border-color: var(--accent);
-  background: rgba(20, 184, 166, 0.08);
+  border-color: var(--border);
+  background: var(--surface-raised);
 }
 
 .lobby-player-avatar {
@@ -2315,7 +2314,7 @@ a {
   font-size: 24px;
   font-weight: 800;
   letter-spacing: 0.15em;
-  color: var(--accent);
+  color: var(--text);
 }
 
 .custom-lobby-copy-btn {
@@ -2904,8 +2903,7 @@ a {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: radial-gradient(ellipse at 50% 0%, rgba(20, 184, 166, 0.12) 0%, transparent 50%),
-              linear-gradient(180deg, #0a0a14 0%, var(--bg) 100%);
+  background: linear-gradient(180deg, #0a0a14 0%, var(--bg) 100%);
   padding: 48px 24px;
 }
 
@@ -2913,8 +2911,8 @@ a {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(20, 184, 166, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(20, 184, 166, 0.06) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 48px 48px;
   mask-image: radial-gradient(ellipse at 50% 40%, black 0%, transparent 70%);
   pointer-events: none;
@@ -2931,7 +2929,7 @@ a {
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(20, 184, 166, 0.10) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 65%);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -55%);
@@ -2976,10 +2974,7 @@ a {
 .onboarding-tagline {
   font-size: 24px;
   font-weight: 600;
-  background: linear-gradient(135deg, var(--text), var(--accent));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--text);
   margin-bottom: 20px;
 }
 
@@ -3052,7 +3047,7 @@ a {
 .onboarding-feature:hover {
   transform: translateY(-4px);
   background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(20, 184, 166, 0.2);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .onboarding-feature-icon {
@@ -3107,7 +3102,7 @@ a {
   width: 100%;
   max-width: 480px;
   background: rgba(24, 24, 28, 0.95);
-  border: 1px solid rgba(20, 184, 166, 0.15);
+  border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: 48px;
   text-align: center;
@@ -3200,14 +3195,14 @@ a {
   justify-content: center;
   min-height: calc(100vh - 64px);
   padding: 24px;
-  background: radial-gradient(ellipse at 50% 0%, rgba(20, 184, 166, 0.08) 0%, transparent 50%);
+  background: var(--bg);
 }
 
 .queue-card {
   width: 100%;
   max-width: 520px;
   background: rgba(24, 24, 28, 0.8);
-  border: 1px solid rgba(20, 184, 166, 0.12);
+  border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: 48px;
   text-align: center;
@@ -3279,7 +3274,7 @@ a {
 .queue-spinner {
   width: 48px;
   height: 48px;
-  border: 3px solid rgba(20, 184, 166, 0.2);
+  border: 3px solid var(--border);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -3334,7 +3329,7 @@ a {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  border: 2px solid rgba(20, 184, 166, 0.3);
+  border: 2px solid var(--border);
   position: relative;
 }
 
@@ -3343,7 +3338,7 @@ a {
   position: absolute;
   inset: 8px;
   border-radius: 50%;
-  border: 2px solid rgba(20, 184, 166, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   animation: radarPulse 2s ease-out infinite;
 }
 
