@@ -1000,9 +1000,7 @@ a {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(15, 15, 30, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--surface);
   border-bottom: 1px solid var(--border);
 }
 
@@ -1034,7 +1032,7 @@ a {
   width: 32px;
   height: 32px;
   border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--accent), #0d9488);
+  background: var(--accent);
   color: #fff;
   font-weight: 900;
   font-size: 12px;
@@ -1045,7 +1043,7 @@ a {
   font-family: var(--font);
   font-weight: 900;
   font-size: 16px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   color: var(--text);
 }
 
@@ -1098,11 +1096,7 @@ a {
 .navbar-user {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 4px 4px 4px 12px;
-  border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  gap: 8px;
 }
 
 .navbar-username {
@@ -1118,7 +1112,7 @@ a {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), #0d9488);
+  background: var(--accent);
   color: #fff;
   font-size: 12px;
   font-weight: 700;
@@ -2903,7 +2897,7 @@ a {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: linear-gradient(180deg, #0a0a14 0%, var(--bg) 100%);
+  background: var(--bg);
   padding: 48px 24px;
 }
 
@@ -2911,30 +2905,9 @@ a {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse at 50% 40%, black 0%, transparent 70%);
+    radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
   pointer-events: none;
-  animation: gridFloat 20s linear infinite;
-}
-
-@keyframes gridFloat {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(48px); }
-}
-
-.onboarding-glow {
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 65%);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -55%);
-  pointer-events: none;
-  filter: blur(40px);
 }
 
 .onboarding-hero {
@@ -2953,7 +2926,7 @@ a {
   width: 72px;
   height: 72px;
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--accent), #0d9488);
+  background: var(--accent);
 }
 
 .onboarding-logo-accent {
@@ -3005,7 +2978,7 @@ a {
 }
 
 .onboarding-btn-primary {
-  background: linear-gradient(135deg, var(--accent), #0d9488);
+  background: var(--accent);
   color: #fff;
 }
 
@@ -3014,14 +2987,13 @@ a {
 }
 
 .onboarding-btn-secondary {
-  background: rgba(255, 255, 255, 0.06);
+  background: transparent;
   color: var(--text);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
 }
 
 .onboarding-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
+  border-color: var(--text-dim);
 }
 
 .onboarding-features {
@@ -3036,18 +3008,16 @@ a {
 }
 
 .onboarding-feature {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 28px;
   text-align: center;
-  transition: transform 200ms ease, background 200ms ease, border-color 200ms ease;
+  transition: border-color 200ms ease;
 }
 
 .onboarding-feature:hover {
-  transform: translateY(-4px);
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .onboarding-feature-icon {
@@ -3091,9 +3061,7 @@ a {
 .tutorial-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(10, 10, 20, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: var(--bg);
 }
 
 .tutorial-card {
@@ -3101,12 +3069,11 @@ a {
   z-index: 1;
   width: 100%;
   max-width: 480px;
-  background: rgba(24, 24, 28, 0.95);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: 48px;
   text-align: center;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
   animation: cardIn 400ms ease-out;
 }
 
@@ -3174,17 +3141,17 @@ a {
   width: 100%;
   padding: 14px 24px;
   border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--accent), #0d9488);
+  background: var(--accent);
   color: #fff;
   font-size: 15px;
   font-weight: 700;
   border: none;
   cursor: pointer;
-  transition: transform 200ms ease;
+  transition: opacity 200ms ease;
 }
 
 .tutorial-btn:hover {
-  transform: translateY(-2px);
+  opacity: 0.85;
 }
 
 /* ── Queue Screen Redesign ───────────────────────── */
@@ -3201,12 +3168,11 @@ a {
 .queue-card {
   width: 100%;
   max-width: 520px;
-  background: rgba(24, 24, 28, 0.8);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: 48px;
   text-align: center;
-  backdrop-filter: blur(12px);
 }
 
 .queue-status-badge {
@@ -3215,8 +3181,8 @@ a {
   gap: 8px;
   padding: 6px 14px;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
   margin-bottom: 24px;
 }
 
@@ -3299,19 +3265,19 @@ a {
   gap: 12px;
   padding: 20px 56px;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--accent), #0d9488);
+  background: var(--accent);
   color: #fff;
   font-size: 22px;
   font-weight: 900;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   border: none;
   cursor: pointer;
-  transition: transform 200ms ease;
+  transition: opacity 200ms ease;
 }
 
 .queue-battle-btn:hover {
-  transform: translateY(-3px) scale(1.02);
+  opacity: 0.85;
 }
 
 .queue-battle-icon {
@@ -3369,8 +3335,8 @@ a {
 }
 
 .queue-stat {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 14px 8px;
   display: flex;
@@ -3395,18 +3361,18 @@ a {
 .queue-cancel-btn {
   padding: 10px 24px;
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  border: 1px solid var(--border);
   color: var(--text-dim);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 200ms ease, color 200ms ease;
+  transition: color 200ms ease, border-color 200ms ease;
 }
 
 .queue-cancel-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
   color: var(--text);
+  border-color: var(--text-dim);
 }
 
 .queue-timeout,
