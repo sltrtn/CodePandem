@@ -38,6 +38,19 @@
 - Docker compose stack healthy (`backend`, `judge`, `frontend`)
 - `/submit` and `/judge` endpoints work in HTTP mode
 
+## What's Done Now (Day 2 — Docker Deep Dive, Part A)
+
+### Infrastructure
+- **`docker-compose.yml`** — added healthchecks for `backend`, `judge`, and `frontend`
+- **Service startup ordering** — `backend` now waits for `judge` to be `healthy`, and `frontend` waits for `backend` to be `healthy`
+- **IPv6 / localhost fix** — frontend healthcheck uses `127.0.0.1` because BusyBox `wget` resolves `localhost` to `::1` first, while nginx only listens on IPv4
+
+### Verified
+- `docker compose ps` → all three services `healthy`
+- `docker inspect` shows backend health status JSON and IP address (`172.18.0.3`)
+- Negative test: stopping the judge container did not break backend/frontend healthchecks; restarting the judge returned it to `healthy`
+- `pytest` 35/35 passing
+
 ## What's Done Now (UX Refresh)
 ### Backend
 - **`User.tutorial_completed`** boolean column added
