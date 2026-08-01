@@ -51,6 +51,22 @@
 - Negative test: stopping the judge container did not break backend/frontend healthchecks; restarting the judge returned it to `healthy`
 - `pytest` 35/35 passing
 
+## What's Done Now (Day 3 — CI/CD with GitHub Actions)
+
+### Infrastructure
+- **`.github/workflows/ci.yml`** — GitHub Actions CI pipeline
+  - `lint` — `ruff` code quality gate
+  - `test-backend` — `pytest` (35 tests)
+  - `build-frontend` — `npm ci` + `npm run build`
+  - `publish-images` — builds and pushes Docker images to GHCR (only on `push` to `main`)
+- **`backend/pyproject.toml`** — added minimal `[tool.ruff]` config to ignore noisy style rules (legacy code patterns like FastAPI `Depends()` defaults)
+
+### Verified
+- `ruff check app tests` passes locally
+- `pytest` 35/35 passing
+- Workflow triggers on `push`/`pull_request` to `main`
+- GHCR packages: `ghcr.io/sltrtn/codepandem/backend`, `judge`, `frontend` published with `latest` + SHA tags
+
 ## What's Done Now (UX Refresh)
 ### Backend
 - **`User.tutorial_completed`** boolean column added
