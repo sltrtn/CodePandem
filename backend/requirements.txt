@@ -6,3 +6,4 @@ pytest-asyncio
 sqlalchemy
 python-jose[cryptography]
 bcrypt
+httpx

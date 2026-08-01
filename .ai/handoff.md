@@ -1,12 +1,12 @@
 # CodePandem — Session Handoff
 
 ## Current State
-- **Version:** 0.7.0
+- **Version:** 0.8.0
 - **Branch:** main
-- **Last commit:** Onboarding, queue overhaul, glass-morphism navbar
+- **Last commit:** Containerized judge sandbox (Step 1)
 - **Tests:** 35/35 passing
 - **Frontend:** Builds clean
-- **Integration Tests:** Queue matchmaking, social flow, duel chat, and auth flow all verified
+- **Integration Tests:** Queue matchmaking, social flow, duel chat, auth flow, and judge sandbox isolation all verified
 
 ## Completed Phases
 1. **Phase 1:** Core platform
@@ -19,6 +19,24 @@
 8. **Phase 8:** Advanced Matchmaking
 9. **Phase 9 — Auth/Account Hardening** ✅
 10. **UX Refresh — Onboarding, Queue, Navbar** ✅
+11. **Step 1 — Containerized Judge Sandbox** ✅
+
+## What's Done Now (Step 1 — Containerized Judge Sandbox)
+
+### Backend
+- **`app/executor.py`** — shared execution core (one source of truth for local process and judge worker)
+- **`app/judge.py`** — mode-aware dispatcher: `process` mode (default, tests) and `http` mode (production compose)
+- **`app/judge_worker.py`** — FastAPI microservice that runs user code in the isolated judge container
+- **`Dockerfile.judge`** — non-root (`judge` user) container image, concurrency semaphore, rlimit memory cap
+
+### Infrastructure
+- **`docker-compose.yml`** — added `judge` service; backend configured with `JUDGE_MODE=http` and `JUDGE_URL=http://judge:9000`
+- **Isolation verified** — judge process runs as uid `1000` (non-root) and cannot read `/etc/shadow`
+
+### Tests
+- 35/35 backend tests passing (process mode default)
+- Docker compose stack healthy (`backend`, `judge`, `frontend`)
+- `/submit` and `/judge` endpoints work in HTTP mode
 
 ## What's Done Now (UX Refresh)
 ### Backend
