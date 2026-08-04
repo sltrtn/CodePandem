@@ -366,4 +366,4 @@ pytest tests/ -v
 
 ---
 
-*Last updated: Day 4 Kubernetes complete, v0.8.0*
+*Last updated: Day 4 Kubernetes complete, v0.8.0. Deep-dive study guide added: `Ref/interview/12-backend-and-devops-deep-dive.md`.*

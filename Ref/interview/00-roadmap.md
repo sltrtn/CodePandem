@@ -30,6 +30,7 @@ You can explain CodePandem from first principles, trace a duel request through t
 - [ ] **09 — DevOps / SRE** — Docker, healthchecks, CI/CD, Kubernetes
 - [ ] **10 — Numbers and traps** — quick facts + honest limitations
 - [ ] **11 — Flashcards** — Q&A drills
+- [ ] **12 — Backend & DevOps deep dive** — single-process runtime, auth/matchmaker/duel/judge internals, Docker, K8s
 
 ## How to use this
 
