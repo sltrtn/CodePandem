@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: judge
+  namespace: codepandem
+  labels:
+    app: judge
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: judge
+  template:
+    metadata:
+      labels:
+        app: judge
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      containers:
+      - name: judge
+        image: ghcr.io/sltrtn/codepandem/judge:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9000
+          name: http
+        envFrom:
+        - configMapRef:
+            name: codepandem-config
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: judge
+  namespace: codepandem
+  labels:
+    app: judge
+spec:
+  type: ClusterIP
+  selector:
+    app: judge
+  ports:
+  - port: 9000
+    targetPort: http
+    name: http

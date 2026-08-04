@@ -125,8 +125,29 @@
 
 Usage: `docker compose up` (add `-d` for detached). Runs on ports 8000 (API) and 80 (frontend).
 
+## What's Done Now (Day 4 — Kubernetes on k3d)
+
+### Infrastructure
+- **Installed** `kubectl` (v1.31.0) and `k3d` (v5.7.3) locally
+- **Created** `k3d-codepandem` cluster (1 server + 2 agents) with loadbalancer port-mapped to host `8080:80`
+- **`k8s/` manifests:** `namespace.yaml`, `configmap.yaml`, `backend.yaml`, `judge.yaml`, `frontend.yaml`, `ingress.yaml`
+- **Reused GHCR images** from Day 3: `ghcr.io/sltrtn/codepandem/{backend,judge,frontend}:latest`
+- **Judge hardening:** `runAsNonRoot: true`, `runAsUser: 1000`, `readOnlyRootFilesystem: true` with `emptyDir` mounted at `/tmp`
+- **Readiness/liveness probes** on `/health` for backend, judge, frontend
+- **Ingress** `codepandem.local` → frontend service; frontend nginx proxies `/api/` and `/ws/` to backend via cluster DNS
+
+### Verified
+- All pods `Running`/`Ready` across 3 nodes
+- E2E judge round-trip via `/submit`: `test_cases_passed: 2, test_cases_total: 3` (sample code)
+- Ingress returns frontend HTML and `/api/health` via `codepandem.local:8080`
+- Self-healing: deleted judge pods recreated automatically
+- Scaling: `kubectl scale deploy/judge --replicas=3` → 3 Running
+- Rollout/rollback: `rollout restart`, `rollout history`, `rollout undo` all successful
+- Judge pod `id` = `uid=1000(judge)`
+
 ## What's Next
-- **Phase 9 (remaining): Production Hardening** — PostgreSQL, Redis, replay system, admin dashboard, horizontal scaling, DDoS protection
+- **README polish + resume update** — immediate, for application submission
+- **Phase 9 (remaining): Production Hardening** — PostgreSQL, Redis, replay system, admin dashboard, horizontal scaling, DDoS protection (deferred until post-interview)
 
 ## Key Files
 - Backend: `/home/mad/codepandem/backend/`

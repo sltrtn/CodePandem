@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: codepandem-config
+  namespace: codepandem
+data:
+  JUDGE_MODE: "http"
+  JUDGE_URL: "http://judge:9000"
+  CORS_ORIGINS: "http://codepandem.local:8080,http://localhost:8080,http://codepandem.local,http://localhost,http://127.0.0.1:8080"
