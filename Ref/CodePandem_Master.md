@@ -1,5 +1,7 @@
 # CodePandem — Master Document
 
+> For a gentler first read, see `Ref/00-Project-Manual.md`. This master doc is the dense reference.
+
 ---
 
 ## What It Is

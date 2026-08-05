@@ -1,6 +1,8 @@
 # CodePandem — Interview Prep Roadmap
 
 > Study guide series. Read in order. Each file is one lesson. Every concept is mapped to your actual code.
+>
+> **New here?** Start with `Ref/00-Project-Manual.md` for a gentle overview of the whole project, then return to this roadmap.
 
 ## The goal
 
