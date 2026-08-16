@@ -15,6 +15,9 @@ export function AuthProvider({ children }) {
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [bootstrapping, setBootstrapping] = useState(
+    () => !!localStorage.getItem("token")
+  );
   const refreshTimerRef = useRef(null);
 
   const clearAuth = useCallback(() => {
@@ -72,6 +75,35 @@ export function AuthProvider({ children }) {
       return null;
     }
   }, [clearAuth, setTokens]);
+
+  // Validate any stored session on boot so stale tokens
+  // clear themselves instead of causing WS "connection lost" loops.
+  useEffect(() => {
+    let cancelled = false;
+    const validate = async () => {
+      const stored = localStorage.getItem("token");
+      if (!stored) {
+        setBootstrapping(false);
+        return;
+      }
+      try {
+        const res = await fetch(`${API}/auth/me`, {
+          headers: { Authorization: `Bearer ${stored}` },
+        });
+        if (res.status === 401) {
+          await refresh();
+        }
+      } catch {
+        // Network error: leave the session as-is rather than forcing logout.
+      } finally {
+        if (!cancelled) setBootstrapping(false);
+      }
+    };
+    validate();
+    return () => {
+      cancelled = true;
+    };
+  }, [refresh]);
 
   // Auto-refresh access token every 13 minutes
   useEffect(() => {
@@ -246,6 +278,7 @@ export function AuthProvider({ children }) {
         refreshToken,
         loading,
         error,
+        bootstrapping,
         register,
         login,
         logout,

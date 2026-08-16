@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useDuel } from "../context/DuelContext";
 import useTelemetry from "../hooks/useTelemetry";
 
@@ -7,6 +7,10 @@ export default function CodeEditor() {
   const { ref: telemetryRef, exportTelemetry, recordPaste, recordKeystroke } = useTelemetry();
   const [code, setCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    setSubmitting(false);
+  }, [lastSubmission]);
 
   const handlePaste = useCallback(
     (e) => {

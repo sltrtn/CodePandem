@@ -26,6 +26,12 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
+function BootstrappingGate({ children }) {
+  const { bootstrapping } = useAuth();
+  if (bootstrapping) return null;
+  return children;
+}
+
 function PublicRoute({ children }) {
   const { token } = useAuth();
   if (token) return <Navigate to="/" replace />;
@@ -56,8 +62,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <ToastProvider>
-          <ChallengeProvider>
+        <BootstrappingGate>
+          <ToastProvider>
+            <ChallengeProvider>
             <Routes>
             <Route
               path="/login"
@@ -166,7 +173,8 @@ export default function App() {
           />
           </Routes>
           </ChallengeProvider>
-        </ToastProvider>
+          </ToastProvider>
+        </BootstrappingGate>
       </AuthProvider>
     </BrowserRouter>
   );
