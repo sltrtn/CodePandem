@@ -261,8 +261,12 @@ export function AuthProvider({ children }) {
     return data;
   }, []);
 
-  const deleteAccount = useCallback(async () => {
-    const res = await apiRequest("/auth/me", { method: "DELETE" });
+  const deleteAccount = useCallback(async (password) => {
+    const res = await apiRequest("/auth/me", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
     if (!res.ok) {
       const data = await res.json();
       throw new Error(data.detail || "Account deletion failed");

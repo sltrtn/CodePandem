@@ -49,6 +49,12 @@ export function ChallengeProvider({ children }) {
             navigate(`/duel/${msg.match_id}`);
           }
           break;
+        case "custom_lobby_started":
+          toast("Opponent joined! Starting match...", "success", 2000);
+          if (msg.match_id) {
+            navigate(`/duel/${msg.match_id}`);
+          }
+          break;
         case "challenge_declined":
           toast("Challenge declined", "error", 2000);
           break;

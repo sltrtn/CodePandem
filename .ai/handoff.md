@@ -2,8 +2,8 @@
 
 ## Current State
 - **Version:** 0.8.0
-- **Branch:** main
-- **Last commit:** Containerized judge sandbox (Step 1)
+- **Branch:** feat/redis-cache-benchmark
+- **Last commit:** Bug fixes: rematch flow, custom-lobby host notification, account deletion password, round-winner text
 - **Tests:** 35/35 passing
 - **Frontend:** Builds clean
 - **Integration Tests:** Queue matchmaking, social flow, duel chat, auth flow, and judge sandbox isolation all verified

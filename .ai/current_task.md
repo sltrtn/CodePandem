@@ -6,50 +6,40 @@
 
 ## Objective
 
-Build a full social competitive platform. Phase 4 (Profiles, Leaderboard & Easter Egg) is complete. Next: Phase 5 (Lobby & Spectating).
+Fix critical UI/gameplay bugs discovered in the full codebase audit and prepare the `feat/redis-cache-benchmark` branch for Redis/performance work.
 
 ---
 
 ## Status
 
-Phase 4 complete. Profiles, leaderboard, match history, and Slater Easter egg all working. Ready for Phase 5.
+Critical bug-fix pass complete. All 35 backend tests pass, frontend builds clean, `ruff` clean.
 
 ---
 
-## Steps
+## Recently Completed
 
-- [x] Backend scaffold (FastAPI, WebSocket, models, config)
-- [x] Judge (subprocess execution, stdin piping, memory limit, timeout)
-- [x] Scoring (tiered: test cases primary, speed tiebreaker)
-- [x] Anti-cheat (paste, tab switch, keystroke, speed analysis)
-- [x] Matchmaking (asyncio.Queue + Futures pairing)
-- [x] Queue WebSocket handler
-- [x] Duel WebSocket handler (submit, broadcast, timer)
-- [x] Frontend scaffold (React + Vite + routing)
-- [x] QueueScreen, DuelScreen, CodeEditor, Scoreboard, ResultsScreen
-- [x] Dark theme CSS
-- [x] Backend tests (19 passing)
-- [x] WebSocket integration (CONNECTED case fix, player_id fix, UUID fix)
-- [x] DuelContext localStorage fix
-- [x] Round.winner field + serialization
-- [x] SQLite + SQLAlchemy database
-- [x] User model + MatchRecord model
-- [x] JWT authentication (register, login, me)
-- [x] WebSocket authentication (token query param)
-- [x] ELO rating system + tier badges
-- [x] Frontend auth (AuthContext, LoginScreen, RegisterScreen)
-- [x] Protected routes
-- [x] Player profile page (stats grid, match history)
-- [x] Global leaderboard page (sorted by ELO)
-- [x] Match history display (per player, with ELO changes)
-- [x] Frontend navigation (navbar)
-- [x] Slater Easter egg (tap username 7 times)
-- [ ] Online players in lobby
-- [ ] Spectate active matches
-- [ ] Rematch system
+- [x] Fix duel round-winner text (now correctly shows You/Opponent/Draw)
+- [x] Fix account deletion flow (frontend now prompts for and sends password)
+- [x] Fix custom-lobby host notification (host is pushed the match_id and navigates)
+- [x] Fix rematch system (new match is created and both players navigate to it)
+- [x] Keep finished matches in memory briefly for rematch, with safe `_player_match` cleanup
+- [x] Update `.ai/handoff.md` current state
+
+---
+
+## Known Remaining Gaps
+
+See full audit for details. Highest priority after this pass:
+
+- [ ] Wire Redis caching into the backend (leaderboard/problems)
+- [ ] Add PostgreSQL service to Docker Compose
+- [ ] Add frontend tests / integration tests
+- [ ] Fix spectator code panels (currently empty)
+- [ ] Fix `useTelemetry` reset and tab-switch tracking
+- [ ] Protect admin endpoints and remove dev-mode password-reset token leak
 
 ---
 
 ## Next Immediate Step
 
-Phase 5: Lobby — show online players, spectate active matches, rematch system.
+Continue with Redis/performance branch wiring or scaffold the separate Go 1M-RPS benchmark repo.

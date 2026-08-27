@@ -17,6 +17,7 @@ from app.matchmaking import matchmaker
 from app.models import Match, PlayerRoundState, PlayerState, Round
 from app.models_db import Friendship, User
 from app.problems import get_problems_for_match
+from app.ws.challenge import notify_user_challenge
 
 router = APIRouter(prefix="/social", tags=["social"])
 
@@ -290,6 +291,12 @@ def join_custom_lobby(
     match.status = "round_active"
 
     _custom_lobbies.pop(code, None)
+
+    asyncio.create_task(notify_user_challenge(lobby_data["host_id"], {
+        "type": "custom_lobby_started",
+        "match_id": match.match_id,
+        "opponent": user.username,
+    }))
 
     return {
         "status": "lobby_joined",

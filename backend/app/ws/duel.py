@@ -17,13 +17,18 @@ from app.matchmaking import matchmaker
 from app.models import (
     Match,
     PlayerRoundState,
+    PlayerState,
     Round,
     SubmissionResult,
     Telemetry,
 )
+from app.problems import get_problems_for_match
 from app.scoring import determine_match_winner, determine_round_winner, score_submission
 
 router = APIRouter()
+
+# match_id:player_id -> rematch WebSocket
+_rematch_ws: dict[str, WebSocket] = {}
 
 
 def _serialize_problem(problem):
@@ -109,6 +114,12 @@ async def _start_round_timer(match: Match, rnd: Round) -> None:
     await _finish_round(match, rnd)
 
 
+async def _delayed_remove_match(match_id: str, delay_s: int = 300) -> None:
+    """Keep finished matches in memory briefly so rematch can reference them."""
+    await asyncio.sleep(delay_s)
+    matchmaker.remove_match(match_id)
+
+
 async def _finish_round(match: Match, rnd: Round) -> None:
     if rnd.status != "active":
         return
@@ -137,7 +148,7 @@ async def _finish_round(match: Match, rnd: Round) -> None:
                 },
                 "rounds": [_serialize_round(r) for r in match.rounds],
             })
-            matchmaker.remove_match(match.match_id)
+            asyncio.create_task(_delayed_remove_match(match.match_id))
             _persist_match(match)
             return
 
@@ -154,7 +165,7 @@ async def _finish_round(match: Match, rnd: Round) -> None:
             },
             "rounds": [_serialize_round(r) for r in match.rounds],
         })
-        matchmaker.remove_match(match.match_id)
+        asyncio.create_task(_delayed_remove_match(match.match_id))
         _persist_match(match)
         return
 
@@ -493,6 +504,47 @@ async def ws_spectate(ws: WebSocket, match_id: str) -> None:
             pass
 
 
+def _create_rematch(original: Match) -> Match | None:
+    """Create a fresh match with the same two players/usernames as the original."""
+    if len(original.players) != 2:
+        return None
+    pid1, pid2 = list(original.players.keys())
+    usernames = getattr(original, "_usernames", {})
+
+    match = Match()
+    match.players[pid1] = PlayerState(player_id=pid1, ws=None)
+    match.players[pid2] = PlayerState(player_id=pid2, ws=None)
+    match._usernames = dict(usernames)
+    match.mode = original.mode
+    match.season_id = original.season_id
+
+    matchmaker._player_match[pid1] = match.match_id
+    matchmaker._player_match[pid2] = match.match_id
+    lobby.set_status(pid1, "in_match", match.match_id)
+    lobby.set_status(pid2, "in_match", match.match_id)
+
+    problems = get_problems_for_match()
+    for i, problem in enumerate(problems):
+        time_limit = CONFIG.ROUND_TIMES[i]
+        rnd = Round(
+            round_number=i + 1,
+            problem=problem,
+            time_limit_s=time_limit,
+            status="active" if i == 0 else "pending",
+            players={
+                pid1: PlayerRoundState(player_id=pid1),
+                pid2: PlayerRoundState(player_id=pid2),
+            },
+        )
+        match.rounds.append(rnd)
+
+    match.current_round = 1
+    match.status = "round_active"
+    matchmaker._matches[match.match_id] = match
+    asyncio.create_task(_start_round_timer(match, match.rounds[0]))
+    return match
+
+
 @router.websocket("/ws/rematch/{match_id}")
 async def ws_rematch(ws: WebSocket, match_id: str) -> None:
     await ws.accept()
@@ -511,9 +563,11 @@ async def ws_rematch(ws: WebSocket, match_id: str) -> None:
             await ws.close()
             return
         player_id = user.id
-        username = user.username
     finally:
         db.close()
+
+    ws_key = f"{match_id}:{player_id}"
+    _rematch_ws[ws_key] = ws
 
     try:
         while True:
@@ -529,18 +583,23 @@ async def ws_rematch(ws: WebSocket, match_id: str) -> None:
                 })
 
                 if both_ready:
-                    match = matchmaker.get_match(match_id)
-                    if match:
-                        pids = list(match.players.keys())
-                        usernames = getattr(match, "_usernames", {})
-                        for pid in pids:
-                            await ws.send_json({
-                                "type": "rematch_accepted",
-                                "match_id": match_id,
-                                "opponent": usernames.get(
-                                    pids[1] if pid == pids[0] else pids[0], "Unknown"
-                                ),
-                            })
+                    original = matchmaker.get_match(match_id)
+                    if original:
+                        new_match = _create_rematch(original)
+                        if new_match:
+                            pids = list(new_match.players.keys())
+                            usernames = getattr(new_match, "_usernames", {})
+                            for pid in pids:
+                                pid_ws = _rematch_ws.get(f"{match_id}:{pid}")
+                                if pid_ws and pid_ws.client_state.name == "CONNECTED":
+                                    await pid_ws.send_json({
+                                        "type": "rematch_started",
+                                        "match_id": new_match.match_id,
+                                        "opponent": usernames.get(
+                                            pids[1] if pid == pids[0] else pids[0], "Unknown"
+                                        ),
+                                    })
+                            matchmaker.clear_rematch(match_id)
 
             elif msg_type == "cancel_rematch":
                 matchmaker.clear_rematch(match_id)
@@ -549,6 +608,7 @@ async def ws_rematch(ws: WebSocket, match_id: str) -> None:
     except WebSocketDisconnect:
         pass
     finally:
+        _rematch_ws.pop(ws_key, None)
         try:
             await ws.close()
         except Exception:

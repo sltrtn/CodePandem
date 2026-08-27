@@ -19,6 +19,20 @@ router = APIRouter()
 _challenge_ws: dict[str, WebSocket] = {}
 
 
+async def notify_user_challenge(user_id: str, message: dict) -> None:
+    """Send a message to a user's challenge WebSocket if connected."""
+    ws = _challenge_ws.get(user_id)
+    if not ws:
+        return
+    if ws.client_state.name != "CONNECTED":
+        _challenge_ws.pop(user_id, None)
+        return
+    try:
+        await ws.send_json(message)
+    except Exception:
+        _challenge_ws.pop(user_id, None)
+
+
 @router.websocket("/ws/challenge")
 async def ws_challenge(ws: WebSocket):
     await ws.accept()

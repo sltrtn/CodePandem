@@ -139,8 +139,9 @@ class Matchmaker:
         match = self._matches.pop(match_id, None)
         if match:
             for pid in match.players:
-                self._player_match.pop(pid, None)
-                lobby.set_status(pid, "online")
+                if self._player_match.get(pid) == match_id:
+                    self._player_match.pop(pid, None)
+                    lobby.set_status(pid, "online")
 
     def request_rematch(self, match_id: str, player_id: str) -> bool:
         if match_id not in self._rematch_requests:

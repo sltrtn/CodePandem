@@ -16,6 +16,7 @@ export default function ProfileScreen() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [deletePassword, setDeletePassword] = useState("");
   const [accountMessage, setAccountMessage] = useState(null);
 
   const isMe = user?.id === userId;
@@ -235,13 +236,21 @@ export default function ProfileScreen() {
 
                 <div className="profile-account-block danger">
                   <h4>Delete Account</h4>
+                  <input
+                    type="password"
+                    placeholder="Current password"
+                    value={deletePassword}
+                    onChange={(e) => setDeletePassword(e.target.value)}
+                    className="auth-input"
+                  />
                   <button
                     className="profile-account-btn danger"
                     onClick={async () => {
                       if (!window.confirm("Delete your account permanently? This cannot be undone.")) return;
                       setAccountMessage(null);
                       try {
-                        await deleteAccount();
+                        await deleteAccount(deletePassword);
+                        setDeletePassword("");
                       } catch (e) {
                         setAccountMessage(e.message);
                       }

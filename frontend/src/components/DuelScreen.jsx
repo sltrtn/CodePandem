@@ -8,10 +8,16 @@ import CountdownTimer from "./CountdownTimer";
 import ChatPanel from "./ChatPanel";
 
 export default function DuelScreen() {
-  const { matchOver, roundData, roundOver } = useDuel();
+  const { matchOver, roundData, roundOver, playerId } = useDuel();
 
   if (matchOver) return <ResultsScreen />;
   if (!roundData) return <div className="loading">Loading match...</div>;
+
+  const roundWinnerText = !roundOver?.winner
+    ? "Draw"
+    : roundOver.winner === playerId
+    ? "You"
+    : "Opponent";
 
   return (
     <div className="duel-screen">
@@ -24,7 +30,7 @@ export default function DuelScreen() {
           <div className="round-result-card">
             <h2>Round {roundOver.round_number} Complete</h2>
             <p>
-              Winner: <strong>{roundOver.winner ? "You" : "Opponent"}</strong>
+              Winner: <strong>{roundWinnerText}</strong>
             </p>
           </div>
         </div>
