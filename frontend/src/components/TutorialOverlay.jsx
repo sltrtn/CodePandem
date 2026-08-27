@@ -3,22 +3,22 @@ import { useAuth } from "../context/AuthContext";
 
 const steps = [
   {
-    icon: "🎮",
+    icon: "01",
     title: "Welcome to CodePandem",
     text: "A competitive arena where you face other developers in real-time coding duels. Fast thinking beats fast typing.",
   },
   {
-    icon: "⚔️",
+    icon: "02",
     title: "How Duels Work",
     text: "Each duel is a best-of-three match across Easy, Medium, and Hard problems. Solve faster and cleaner than your opponent to win the round.",
   },
   {
-    icon: "🏆",
+    icon: "03",
     title: "Climb the Ranks",
     text: "Your ELO changes after every duel. Climb from Bronze through Silver, Gold, Platinum, and Diamond. Every season resets the race.",
   },
   {
-    icon: "🚀",
+    icon: "04",
     title: "Your First Opponent Awaits",
     text: "Click Battle when you're ready. We'll find a fair match based on your rating. Good luck!",
   },

@@ -21,7 +21,7 @@ export default function Scoreboard() {
               {isMe ? "You" : "Opponent"}
               {p.suspicious && (
                 <span className="cheat-flag" title="Suspicious activity detected">
-                  ⚠
+                  !
                 </span>
               )}
             </div>

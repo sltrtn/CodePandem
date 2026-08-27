@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useDuel } from "../context/DuelContext";
 
@@ -39,7 +39,7 @@ function CheatReport({ rounds, playerId }) {
   return (
     <div className="cheat-report">
       <button className="cheat-report-toggle" onClick={() => setExpanded(!expanded)}>
-        <span className="cheat-report-icon">🛡</span>
+        <span className="cheat-report-icon" aria-hidden="true">◈</span>
         Integrity Report
         <span className={`cheat-report-arrow ${expanded ? "open" : ""}`}>▸</span>
       </button>
@@ -73,6 +73,7 @@ function CheatReport({ rounds, playerId }) {
 export default function ResultsScreen() {
   const { matchOver, playerId } = useDuel();
   const { token } = useAuth();
+  const navigate = useNavigate();
   const [rematchState, setRematchState] = useState(null);
   const [opponentReady, setOpponentReady] = useState(false);
   const wsRef = useRef(null);
@@ -93,8 +94,10 @@ export default function ResultsScreen() {
             setOpponentReady(true);
           }
           break;
-        case "rematch_accepted":
-          setRematchState("accepted");
+        case "rematch_started":
+          if (msg.match_id) {
+            navigate(`/duel/${msg.match_id}`);
+          }
           break;
         case "rematch_cancelled":
           setRematchState(null);
@@ -104,7 +107,7 @@ export default function ResultsScreen() {
     };
 
     return () => ws.close();
-  }, [token, matchOver?.match_id, playerId]);
+  }, [token, matchOver?.match_id, playerId, navigate]);
 
   const handleRematch = () => {
     setRematchState("requested");

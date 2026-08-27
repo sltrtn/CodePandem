@@ -161,7 +161,7 @@ export default function QueueScreen() {
               {queueInfo.playersInQueue === 1 ? "" : "s"} in queue.
             </p>
             <button className="queue-battle-btn" onClick={handleBattle}>
-              <span className="queue-battle-icon">⚔️</span>
+              <span className="queue-battle-icon" aria-hidden="true">↗</span>
               <span>BATTLE</span>
             </button>
           </div>
